@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Islam Box Tech"/>
+<meta name="theme-color" content="#0a0f1e"/>
+<title>Islam Box Tech — إدارة الاشتراكات</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0a0f1e;color:#e2e8f0;font-family:'Segoe UI',Tahoma,sans-serif;direction:rtl;min-height:100vh}
+  input,select,textarea,button{font-family:inherit;direction:rtl}
+
+  /* HEADER */
+  #header{background:linear-gradient(135deg,#0f172a,#1e1b4b);border-bottom:1px solid #1e293b;padding:12px 16px;position:sticky;top:0;z-index:100}
+  .logo{font-size:18px;font-weight:800;color:#60a5fa}
+  .logo-sub{font-size:11px;color:#64748b;margin-top:2px}
+  nav{display:flex;gap:6px;margin-top:10px}
+  .nav-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid #1e293b;background:transparent;color:#94a3b8;cursor:pointer;font-size:13px}
+  .nav-btn.active{background:#1e40af;color:#fff;border-color:#3b82f6}
+
+  /* CONTENT */
+  #content{padding:16px;max-width:700px;margin:0 auto;padding-bottom:40px}
+  .page-title{font-size:20px;font-weight:700;margin-bottom:16px;color:#f1f5f9}
+
+  /* STATS */
+  .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+  .stat-card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:14px;text-align:center;cursor:pointer}
+  .stat-icon{font-size:22px}
+  .stat-value{font-size:24px;font-weight:800;margin:4px 0}
+  .stat-label{font-size:12px;color:#64748b}
+
+  /* ALERTS */
+  .alert-box{background:#0f1a0f;border:1px solid #f59e0b;border-radius:12px;padding:14px;margin-bottom:14px}
+  .alert-box.expired{background:#1a0a0a;border-color:#ef4444}
+  .alert-title{font-weight:700;margin-bottom:10px;font-size:14px;color:#f59e0b}
+  .alert-box.expired .alert-title{color:#ef4444}
+  .alert-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1e293b;font-size:13px;gap:8px}
+  .alert-row:last-child{border-bottom:none}
+  .alert-row-btns{display:flex;gap:6px;align-items:center;flex-shrink:0}
+
+  /* BADGES */
+  .badge-active{background:#052e16;color:#4ade80;border:1px solid #166534;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+  .badge-warning{background:#1c1000;color:#fbbf24;border:1px solid #92400e;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+  .badge-expired{background:#1a0a0a;color:#f87171;border:1px solid #7f1d1d;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600}
+
+  /* LIST */
+  .list-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .add-btn{background:#1d4ed8;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;font-size:13px}
+  .search-row{display:flex;gap:8px;margin-bottom:14px}
+  .search-input{flex:1;background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:14px}
+  .filter-select{background:#0f172a;border:1px solid #1e293b;border-radius:8px;padding:9px 10px;color:#e2e8f0;font-size:13px}
+  .empty{text-align:center;color:#475569;padding:40px;font-size:16px}
+
+  /* CLIENT CARDS */
+  .client-card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:14px;cursor:pointer;margin-bottom:10px;active:opacity:.8}
+  .client-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .avatar{width:40px;height:40px;border-radius:50%;background:#1e40af;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+  .client-name{font-weight:700;font-size:14px}
+  .client-phone{font-size:12px;color:#64748b;margin-top:2px}
+  .client-card-bottom{display:flex;justify-content:space-between;font-size:11px;color:#64748b;border-top:1px solid #1e293b;padding-top:8px;flex-wrap:wrap;gap:4px}
+
+  /* FORM */
+  .form-card{background:#0f172a;border:1px solid #1e293b;border-radius:16px;padding:20px}
+  label{display:block;font-size:12px;color:#94a3b8;margin-bottom:5px;margin-top:14px}
+  label:first-child{margin-top:0}
+  input[type=text],input[type=number],select.form-select{width:100%;background:#020617;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;color:#e2e8f0;font-size:15px}
+  .duration-row{display:flex;gap:8px;flex-wrap:wrap}
+  .dur-btn{flex:1;min-width:60px;padding:10px 6px;background:#020617;border:1px solid #1e293b;border-radius:8px;color:#94a3b8;cursor:pointer;font-size:13px}
+  .dur-btn.active{background:#1e3a8a;border-color:#3b82f6;color:#93c5fd;font-weight:700}
+  .preview-box{background:#020617;border:1px solid #1e293b;border-radius:8px;padding:12px;margin-top:14px;font-size:12px;color:#94a3b8;line-height:2}
+  .submit-btn{width:100%;margin-top:16px;padding:14px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:16px;font-weight:700}
+
+  /* DETAIL */
+  .back-btn{background:transparent;border:none;color:#60a5fa;cursor:pointer;font-size:14px;margin-bottom:14px;padding:0}
+  .detail-card{background:#0f172a;border:1px solid #1e293b;border-radius:16px;padding:20px;text-align:center}
+  .detail-avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#1e40af,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 10px}
+  .detail-name{font-size:20px;font-weight:800;margin-bottom:4px}
+  .detail-phone{color:#64748b;margin-bottom:12px;font-size:14px}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;text-align:right}
+  .detail-item{background:#020617;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+  .detail-actions{display:flex;gap:10px;margin-top:16px}
+  .msg-btn-lg{flex:1;padding:12px;background:#064e3b;color:#34d399;border:1px solid #065f46;border-radius:10px;cursor:pointer;font-weight:700;font-size:13px}
+  .del-btn-lg{padding:12px 16px;background:#1a0a0a;color:#f87171;border:1px solid #7f1d1d;border-radius:10px;cursor:pointer;font-weight:700;font-size:13px}
+
+  /* MSG BTN small */
+  .msg-btn-sm{background:#164e63;color:#38bdf8;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11px}
+
+  /* CREDENTIALS */
+  .cred-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #1e293b;font-size:13px;gap:8px}
+  .cred-row:last-of-type{border-bottom:none}
+  .cred-val-row{display:flex;align-items:center;gap:6px;max-width:65%}
+  .cred-val{color:#e2e8f0;font-family:monospace;font-size:13px;word-break:break-all}
+  .copy-cred-btn{background:#0f172a;border:1px solid #1e293b;border-radius:5px;color:#94a3b8;cursor:pointer;padding:3px 7px;font-size:12px;flex-shrink:0}
+
+  /* MODAL */
+  #overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;padding:16px}
+  #overlay.show{display:flex}
+  .modal{background:#0f172a;border:1px solid #1e293b;border-radius:16px;padding:20px;width:100%;max-width:460px}
+  .modal-title{font-size:16px;font-weight:700;margin-bottom:14px;color:#60a5fa}
+  .msg-area{width:100%;background:#020617;border:1px solid #1e293b;border-radius:8px;padding:12px;color:#e2e8f0;font-size:13px;line-height:1.8;resize:none}
+  .modal-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .copy-btn{flex:1;padding:10px;background:#1e3a8a;color:#93c5fd;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px}
+  .wa-btn{flex:1;padding:10px;background:#064e3b;color:#34d399;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:13px;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center}
+  .msg-type-btn{flex:1;min-width:70px;padding:7px 6px;background:#020617;border:1px solid #1e293b;border-radius:7px;color:#94a3b8;cursor:pointer;font-size:12px}
+  .msg-type-btn.active{background:#1e3a8a;border-color:#3b82f6;color:#93c5fd;font-weight:700}
+  .close-btn{padding:10px 14px;background:#1a0a0a;color:#f87171;border:none;border-radius:8px;cursor:pointer;font-size:13px}
+
+  /* STARTUP ALERT */
+  #startup-alert{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;padding:16px}
+  #startup-alert.show{display:flex}
+  .startup-box{background:#0f172a;border:2px solid #f59e0b;border-radius:18px;padding:22px;width:100%;max-width:420px}
+  .startup-title{font-size:17px;font-weight:800;color:#fbbf24;margin-bottom:14px;text-align:center}
+  .startup-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #1e293b;gap:8px;font-size:13px}
+  .startup-row:last-of-type{border-bottom:none}
+  .send-one-btn{background:#064e3b;color:#34d399;border:1px solid #065f46;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12px;white-space:nowrap}
+  .startup-footer{display:flex;gap:8px;margin-top:14px}
+  .send-all-btn{flex:1;padding:11px;background:linear-gradient(135deg,#065f46,#1e40af);color:#fff;border:none;border-radius:9px;cursor:pointer;font-weight:700;font-size:14px}
+  .skip-btn{padding:11px 16px;background:#1a0a0a;color:#94a3b8;border:none;border-radius:9px;cursor:pointer;font-size:13px}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div class="logo">📺 Islam Box Tech</div>
+  <div class="logo-sub">Zeboudja — إدارة الاشتراكات</div>
+  <nav>
+    <button class="nav-btn active" onclick="showView('dashboard')">🏠 الرئيسية</button>
+    <button class="nav-btn" onclick="showView('list')">👥 الزبائن</button>
+    <button class="nav-btn" onclick="showView('add')">➕ جديد</button>
+  </nav>
+</div>
+
+<div id="content"></div>
+
+<!-- STARTUP ALERT -->
+<div id="startup-alert">
+  <div class="startup-box">
+    <div class="startup-title">🔔 تنبيه — اشتراكات تنتهي خلال 3 أيام!</div>
+    <div id="startup-list"></div>
+    <div class="startup-footer">
+      <button class="send-all-btn" onclick="sendAllReminders()">📩 إرسال للكل عبر واتساب</button>
+      <button class="skip-btn" onclick="closeStartup()">تجاوز</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-title"></div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+      <button class="msg-type-btn active" onclick="switchMsgType(this,'auto')" id="btn-auto">🔄 تلقائي</button>
+      <button class="msg-type-btn" onclick="switchMsgType(this,'reminder')" id="btn-reminder">⚠️ تذكير</button>
+      <button class="msg-type-btn" onclick="switchMsgType(this,'expired')" id="btn-expired">❌ منتهي</button>
+      <button class="msg-type-btn" onclick="switchMsgType(this,'active')" id="btn-active">✅ نشط</button>
+    </div>
+    <textarea class="msg-area" id="msg-area" rows="8"></textarea>
+    <div class="modal-actions">
+      <button class="copy-btn" onclick="copyMsg()">📋 نسخ الرسالة</button>
+      <a class="wa-btn" id="wa-link" href="#" target="_blank">💬 واتساب</a>
+      <button class="close-btn" onclick="document.getElementById('overlay').classList.remove('show')">✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- DATA ----
+let clients = JSON.parse(localStorage.getItem('iptv_clients') || 'null') || [
+  {id:1,name:"أحمد بن علي",phone:"0550123456",plan:"12 شهر",startDate:"2025-03-10",endDate:"2026-03-10",price:2500},
+  {id:2,name:"فاطمة زهراء",phone:"0661234567",plan:"3 أشهر",startDate:"2026-01-01",endDate:"2026-03-15",price:800},
+  {id:3,name:"يوسف كريم",phone:"0770987654",plan:"1 شهر",startDate:"2026-02-10",endDate:"2026-03-10",price:300}
+];
+
+let currentView = 'dashboard';
+let selectedId = null;
+let formDuration = 1;
+let filterStatus = 'all';
+
+function save() { localStorage.setItem('iptv_clients', JSON.stringify(clients)); }
+
+function addMonths(date, m) {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() + m);
+  return d;
+}
+function daysLeft(endDate) {
+  return Math.ceil((new Date(endDate) - new Date()) / 86400000);
+}
+function fmtDate(date) {
+  return new Date(date).toLocaleDateString('ar-DZ', {year:'numeric',month:'long',day:'numeric'});
+}
+function badge(days) {
+  if(days < 0) return '<span class="badge-expired">منتهي</span>';
+  if(days <= 7) return '<span class="badge-warning">⚠ '+days+' أيام</span>';
+  return '<span class="badge-active">✓ نشط</span>';
+}
+function waMsg(c, type) {
+  const d = daysLeft(c.endDate);
+  const sub = c.subName ? ' (' + c.subName + ')' : '';
+  if(type==='reminder' || (!type && d >= 0 && d <= 7)) {
+    return 'السلام عليكم ' + c.name + ' 👋\n\nتنبيه هام ⚠️\nاشتراكك' + sub + ' سينتهي خلال ' + d + ' أيام فقط!\n📅 تاريخ الانتهاء: ' + fmtDate(c.endDate) + '\n\nجدد الآن ولا تنقطع عن المشاهدة 📺\nتواصل معنا لتجديد اشتراكك 💰\n\n— Islam Box Tech Zeboudja';
+  }
+  if(type==='expired' || (!type && d < 0)) {
+    return 'السلام عليكم ' + c.name + ' 👋\n\nاشتراكك' + sub + ' قد انتهى ❌\n📅 انتهى بتاريخ: ' + fmtDate(c.endDate) + '\n\nتواصل معنا لتجديده بأحسن الأسعار 💰\nنحن في خدمتك دائماً 🙏\n\n— Islam Box Tech Zeboudja';
+  }
+  return 'السلام عليكم ' + c.name + ' 👋\n\nشكراً على ثقتك في Islam Box Tech 🙏\nاشتراكك' + sub + ' نشط ✅\n📅 ينتهي بتاريخ: ' + fmtDate(c.endDate) + '\n\nأي استفسار نحن في خدمتك 😊\n\n— Islam Box Tech Zeboudja';
+}
+
+// ---- VIEWS ----
+function showView(v) {
+  currentView = v;
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{
+    b.classList.toggle('active', ['dashboard','list','add'][i]===v);
+  });
+  render();
+}
+
+function render() {
+  const el = document.getElementById('content');
+  if(currentView==='dashboard') el.innerHTML = renderDashboard();
+  else if(currentView==='list') el.innerHTML = renderList();
+  else if(currentView==='add') el.innerHTML = renderAdd();
+  else if(currentView==='detail') el.innerHTML = renderDetail();
+}
+
+function renderDashboard() {
+  const expiring = clients.filter(c=>{ const d=daysLeft(c.endDate); return d>=0&&d<=7; });
+  const expired  = clients.filter(c=>daysLeft(c.endDate)<0);
+  const active   = clients.filter(c=>daysLeft(c.endDate)>7);
+  const revenue  = clients.reduce((s,c)=>s+(c.price||0),0);
+
+  let alerts = '';
+  if(expiring.length) {
+    alerts += `<div class="alert-box"><div class="alert-title">⚠️ اشتراكات تنتهي خلال 7 أيام</div>`;
+    expiring.forEach(c=>{
+      alerts += `<div class="alert-row"><span>${c.name} — ${c.phone}</span><div class="alert-row-btns">${badge(daysLeft(c.endDate))}<button class="msg-btn-sm" onclick="openModal(${c.id})">📩</button></div></div>`;
+    });
+    alerts += `</div>`;
+  }
+  if(expired.length) {
+    alerts += `<div class="alert-box expired"><div class="alert-title">❌ اشتراكات منتهية</div>`;
+    expired.forEach(c=>{
+      alerts += `<div class="alert-row"><span>${c.name} — ${c.phone}</span><button class="msg-btn-sm" onclick="openModal(${c.id})">📩 تجديد</button></div>`;
+    });
+    alerts += `</div>`;
+  }
+
+  return `
+    <h2 class="page-title">لوحة التحكم</h2>
+    <div class="stats-grid">
+      <div class="stat-card" onclick="showView('list')"><div class="stat-icon">👥</div><div class="stat-value" style="color:#3b82f6">${clients.length}</div><div class="stat-label">إجمالي الزبائن</div></div>
+      <div class="stat-card" onclick="setFilter('active')"><div class="stat-icon">✅</div><div class="stat-value" style="color:#22c55e">${active.length}</div><div class="stat-label">اشتراكات نشطة</div></div>
+      <div class="stat-card" onclick="setFilter('warning')"><div class="stat-icon">⚠️</div><div class="stat-value" style="color:#f59e0b">${expiring.length}</div><div class="stat-label">تنتهي قريباً</div></div>
+      <div class="stat-card" onclick="setFilter('expired')"><div class="stat-icon">❌</div><div class="stat-value" style="color:#ef4444">${expired.length}</div><div class="stat-label">منتهية</div></div>
+      <div class="stat-card" style="grid-column:span 2"><div class="stat-icon">💰</div><div class="stat-value" style="color:#8b5cf6;font-size:20px">${revenue.toLocaleString('ar')} دج</div><div class="stat-label">إجمالي الإيرادات</div></div>
+    </div>
+    ${alerts}
+  `;
+}
+
+function setFilter(f) { filterStatus=f; showView('list'); }
+
+function renderList() {
+  const search = (document.getElementById('search-input')||{value:''}).value || '';
+  const filtered = clients.filter(c=>{
+    const m = c.name.includes(search)||c.phone.includes(search);
+    const d = daysLeft(c.endDate);
+    if(filterStatus==='active') return m&&d>7;
+    if(filterStatus==='warning') return m&&d>=0&&d<=7;
+    if(filterStatus==='expired') return m&&d<0;
+    return m;
+  });
+
+  let cards = filtered.length===0 ? '<div class="empty">لا توجد نتائج 🙁</div>' :
+    filtered.map(c=>`
+      <div class="client-card" onclick="openDetail(${c.id})">
+        <div class="client-card-top">
+          <div class="avatar">${c.name[0]}</div>
+          <div style="flex:1">
+            <div class="client-name">${c.name}</div>
+            <div class="client-phone">📞 ${c.phone}</div>
+          </div>
+          ${badge(daysLeft(c.endDate))}
+        </div>
+        <div class="client-card-bottom">
+          <span>📦 ${c.plan}</span>
+          ${c.subName ? '<span>🏷️ '+c.subName+'</span>' : ''}
+          <span>📅 ${fmtDate(c.endDate)}</span>
+          <span>💰 ${(c.price||0).toLocaleString('ar')} دج</span>
+        </div>
+      </div>
+    `).join('');
+
+  return `
+    <div class="list-header">
+      <h2 class="page-title" style="margin:0">قائمة الزبائن</h2>
+      <button class="add-btn" onclick="showView('add')">➕ جديد</button>
+    </div>
+    <div class="search-row">
+      <input class="search-input" id="search-input" placeholder="🔍 ابحث..." value="${search}" oninput="renderListInPlace(this.value)"/>
+      <select class="filter-select" onchange="filterStatus=this.value;render()">
+        <option value="all" ${filterStatus==='all'?'selected':''}>الكل</option>
+        <option value="active" ${filterStatus==='active'?'selected':''}>نشط</option>
+        <option value="warning" ${filterStatus==='warning'?'selected':''}>ينتهي قريباً</option>
+        <option value="expired" ${filterStatus==='expired'?'selected':''}>منتهي</option>
+      </select>
+    </div>
+    <div id="cards-container">${cards}</div>
+  `;
+}
+
+function renderListInPlace(val) {
+  const filtered = clients.filter(c=>{
+    const m = c.name.includes(val)||c.phone.includes(val);
+    const d = daysLeft(c.endDate);
+    if(filterStatus==='active') return m&&d>7;
+    if(filterStatus==='warning') return m&&d>=0&&d<=7;
+    if(filterStatus==='expired') return m&&d<0;
+    return m;
+  });
+  const el = document.getElementById('cards-container');
+  if(!el) return;
+  el.innerHTML = filtered.length===0 ? '<div class="empty">لا توجد نتائج 🙁</div>' :
+    filtered.map(c=>`
+      <div class="client-card" onclick="openDetail(${c.id})">
+        <div class="client-card-top">
+          <div class="avatar">${c.name[0]}</div>
+          <div style="flex:1"><div class="client-name">${c.name}</div><div class="client-phone">📞 ${c.phone}</div></div>
+          ${badge(daysLeft(c.endDate))}
+        </div>
+        <div class="client-card-bottom">
+          <span>📦 ${c.plan}</span>${c.subName ? '<span>🏷️ '+c.subName+'</span>' : ''}<span>📅 ${fmtDate(c.endDate)}</span><span>💰 ${(c.price||0).toLocaleString('ar')} دج</span>
+        </div>
+      </div>
+    `).join('');
+}
+
+function renderAdd() {
+  const start = new Date();
+  const end = addMonths(start, formDuration);
+  const durs = [1,3,6,12];
+  const durBtns = durs.map(d=>`<button class="dur-btn ${formDuration===d?'active':''}" onclick="setDur(${d})">${d===1?'شهر':d===12?'سنة':d+' أشهر'}</button>`).join('');
+  return `
+    <h2 class="page-title">➕ زبون جديد</h2>
+    <div class="form-card">
+      <label>اسم الزبون</label>
+      <input type="text" id="f-name" placeholder="مثال: أحمد بن علي"/>
+      <label>رقم الهاتف</label>
+      <input type="text" id="f-phone" placeholder="0550 000 000"/>
+      <label>اسم الاشتراك / الباقة</label>
+      <input type="text" id="f-subname" placeholder="مثال: Gold IPTV، Silver، VIP..."/>
+
+      <div style="background:#020617;border:1px solid #1e3a8a;border-radius:10px;padding:12px;margin-top:16px">
+        <div style="color:#60a5fa;font-weight:700;font-size:13px;margin-bottom:10px">🔐 بيانات الدخول (اختياري)</div>
+        <label style="margin-top:0">رابط السيرفر</label>
+        <input type="text" id="f-server" placeholder="http://server.com:8080"/>
+        <label>اسم المستخدم</label>
+        <input type="text" id="f-user" placeholder="username123"/>
+        <label>كلمة المرور</label>
+        <div style="position:relative">
+          <input type="password" id="f-pass" placeholder="password123" style="width:100%;padding-left:40px"/>
+          <button type="button" onclick="togglePass('f-pass',this)" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:#64748b;cursor:pointer;font-size:16px">👁</button>
+        </div>
+      </div>
+
+      <label>مدة الاشتراك</label>
+      <div class="duration-row">${durBtns}</div>
+      <label>السعر (دج)</label>
+      <input type="number" id="f-price" placeholder="1000"/>
+      <div class="preview-box">
+        📅 البداية: <b>${fmtDate(start)}</b><br>
+        📅 النهاية: <b>${fmtDate(end)}</b>
+      </div>
+      <button class="submit-btn" onclick="addClient()">✅ حفظ الاشتراك</button>
+    </div>
+  `;
+}
+
+function setDur(d) { formDuration=d; render(); }
+
+function addClient() {
+  const name = document.getElementById('f-name').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const subName = document.getElementById('f-subname').value.trim();
+  const server = document.getElementById('f-server').value.trim();
+  const username = document.getElementById('f-user').value.trim();
+  const password = document.getElementById('f-pass').value.trim();
+  const price = Number(document.getElementById('f-price').value)||0;
+  if(!name||!phone) { alert('الرجاء إدخال الاسم ورقم الهاتف'); return; }
+  const start = new Date();
+  const end = addMonths(start, formDuration);
+  const planLabel = formDuration===1?'1 شهر':formDuration===12?'12 شهر':formDuration+' أشهر';
+  clients.unshift({
+    id: Date.now(), name, phone, subName, server, username, password, plan: planLabel,
+    startDate: start.toISOString().split('T')[0],
+    endDate: end.toISOString().split('T')[0],
+    price
+  });
+  save();
+  filterStatus='all';
+  showView('list');
+}
+
+function togglePass(id, btn) {
+  const inp = document.getElementById(id);
+  if(inp.type==='password') { inp.type='text'; btn.textContent='🙈'; }
+  else { inp.type='password'; btn.textContent='👁'; }
+}
+
+function openDetail(id) { selectedId=id; showView('detail'); }
+
+function renderDetail() {
+  const c = clients.find(x=>x.id===selectedId);
+  if(!c) return '<div class="empty">الزبون غير موجود</div>';
+  const d = daysLeft(c.endDate);
+
+  const credSection = (c.server || c.username || c.password) ? `
+    <div style="background:#020617;border:1px solid #1e3a8a;border-radius:10px;padding:14px;margin-top:12px;text-align:right">
+      <div style="color:#60a5fa;font-weight:700;font-size:13px;margin-bottom:10px">🔐 بيانات الدخول</div>
+      ${c.server ? `<div class="cred-row"><span style="color:#64748b">🌐 السيرفر</span><div class="cred-val-row"><span class="cred-val">${c.server}</span><button class="copy-cred-btn" onclick="copyText('${c.server.replace(/'/g,"\\'")}',this)">📋</button></div></div>` : ''}
+      ${c.username ? `<div class="cred-row"><span style="color:#64748b">👤 اليوزر</span><div class="cred-val-row"><span class="cred-val">${c.username}</span><button class="copy-cred-btn" onclick="copyText('${c.username.replace(/'/g,"\\'")}',this)">📋</button></div></div>` : ''}
+      ${c.password ? `<div class="cred-row"><span style="color:#64748b">🔑 الباسورد</span><div class="cred-val-row"><span class="cred-val" id="pass-val-${c.id}">••••••••</span><button class="copy-cred-btn" onclick="toggleDetailPass(${c.id},'${c.password.replace(/'/g,"\\'")}')">👁</button><button class="copy-cred-btn" onclick="copyText('${c.password.replace(/'/g,"\\'")}',this)">📋</button></div></div>` : ''}
+      <button style="width:100%;margin-top:10px;padding:9px;background:#1e3a8a;color:#93c5fd;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600" onclick="sendCredentials(${c.id})">📩 إرسال بيانات الدخول لواتساب</button>
+    </div>` : '';
+
+  return `
+    <button class="back-btn" onclick="showView('list')">← رجوع</button>
+    <div class="detail-card">
+      <div class="detail-avatar">${c.name[0]}</div>
+      <div class="detail-name">${c.name}</div>
+      <div class="detail-phone">📞 ${c.phone}</div>
+      ${badge(d)}
+      <div class="detail-grid">
+        <div class="detail-item"><span>📦 الباقة</span><b>${c.plan}</b></div>
+        ${c.subName ? '<div class="detail-item" style="grid-column:span 2"><span>🏷️ اسم الاشتراك</span><b>'+c.subName+'</b></div>' : ''}
+        <div class="detail-item"><span>📅 البداية</span><b>${fmtDate(c.startDate)}</b></div>
+        <div class="detail-item"><span>📅 النهاية</span><b>${fmtDate(c.endDate)}</b></div>
+        <div class="detail-item"><span>⏳ الأيام</span><b>${d>0?d+' يوم':'منتهي'}</b></div>
+        <div class="detail-item" style="grid-column:span 2"><span>💰 السعر</span><b>${(c.price||0).toLocaleString('ar')} دج</b></div>
+      </div>
+      ${credSection}
+      <div class="detail-actions">
+        <button class="msg-btn-lg" onclick="openModal(${c.id})">📩 رسالة واتساب</button>
+        <button class="del-btn-lg" onclick="deleteClient(${c.id})">🗑</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleDetailPass(id, pass) {
+  const el = document.getElementById('pass-val-'+id);
+  if(!el) return;
+  el.textContent = el.textContent === '••••••••' ? pass : '••••••••';
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig = btn.textContent;
+    btn.textContent = '✅';
+    setTimeout(()=>btn.textContent=orig, 1500);
+  });
+}
+
+function sendCredentials(id) {
+  const c = clients.find(x=>x.id===id);
+  if(!c) return;
+  const sub = c.subName || 'IPTV';
+  let msg = 'السلام عليكم ' + c.name + ' 👋\n\n';
+  msg += '✅ تم تفعيل اشتراكك في ' + sub + '\n\n';
+  msg += '🔐 بيانات الدخول:\n';
+  if(c.server)   msg += '🌐 السيرفر: ' + c.server + '\n';
+  if(c.username) msg += '👤 اليوزر: ' + c.username + '\n';
+  if(c.password) msg += '🔑 الباسورد: ' + c.password + '\n';
+  msg += '\n📅 الاشتراك ينتهي: ' + fmtDate(c.endDate);
+  msg += '\n\nأي مشكلة راسلنا 😊\n— Islam Box Tech Zeboudja';
+  const phone = c.phone.replace(/^0/,'213');
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg), '_blank');
+}
+
+function deleteClient(id) {
+  if(!confirm('هل تريد حذف هذا الزبون؟')) return;
+  clients = clients.filter(c=>c.id!==id);
+  save();
+  showView('list');
+}
+
+// ---- MODAL ----
+let modalClient = null;
+let modalMsgType = 'auto';
+
+function openModal(id) {
+  modalClient = clients.find(x=>x.id===id);
+  if(!modalClient) return;
+  modalMsgType = 'auto';
+  document.querySelectorAll('.msg-type-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-auto').classList.add('active');
+  document.getElementById('modal-title').textContent = '📩 رسالة — ' + modalClient.name;
+  updateModalMsg();
+  document.getElementById('overlay').classList.add('show');
+}
+
+function updateModalMsg() {
+  const type = modalMsgType === 'auto' ? null : modalMsgType;
+  const msg = waMsg(modalClient, type);
+  document.getElementById('msg-area').value = msg;
+  const phone = modalClient.phone.replace(/^0/,'213');
+  document.getElementById('wa-link').href = 'https://wa.me/'+phone+'?text='+encodeURIComponent(msg);
+}
+
+function switchMsgType(btn, type) {
+  modalMsgType = type;
+  document.querySelectorAll('.msg-type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateModalMsg();
+}
+
+function closeModal(e) {
+  if(e.target===document.getElementById('overlay'))
+    document.getElementById('overlay').classList.remove('show');
+}
+function copyMsg() {
+  const ta = document.getElementById('msg-area');
+  navigator.clipboard.writeText(ta.value).then(()=>{
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent='✅ تم النسخ!';
+    setTimeout(()=>btn.textContent='📋 نسخ الرسالة',2000);
+  });
+}
+
+// ---- STARTUP CHECK (3 days) ----
+let startupClients = [];
+
+function checkStartup() {
+  const today = new Date().toDateString();
+  const lastCheck = localStorage.getItem('iptv_last_check');
+  if(lastCheck === today) return; // مرة واحدة يومياً
+  localStorage.setItem('iptv_last_check', today);
+
+  startupClients = clients.filter(c => {
+    const d = daysLeft(c.endDate);
+    return d >= 0 && d <= 3;
+  });
+
+  if(startupClients.length === 0) return;
+
+  const list = document.getElementById('startup-list');
+  list.innerHTML = startupClients.map(c => {
+    const d = daysLeft(c.endDate);
+    return '<div class="startup-row">' +
+      '<span><b>' + c.name + '</b><br><span style="color:#64748b;font-size:12px">📞 ' + c.phone + (c.subName?' — '+c.subName:'') + '</span></span>' +
+      '<div style="display:flex;gap:6px;align-items:center;flex-shrink:0">' +
+        '<span class="badge-warning">' + d + ' أيام</span>' +
+        '<a class="send-one-btn" href="https://wa.me/' + c.phone.replace(/^0/,'213') + '?text=' + encodeURIComponent(waMsg(c,'reminder')) + '" target="_blank">📩</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('startup-alert').classList.add('show');
+}
+
+function closeStartup() {
+  document.getElementById('startup-alert').classList.remove('show');
+}
+
+let sendIndex = 0;
+function sendAllReminders() {
+  if(sendIndex >= startupClients.length) {
+    closeStartup();
+    sendIndex = 0;
+    return;
+  }
+  const c = startupClients[sendIndex];
+  const url = 'https://wa.me/' + c.phone.replace(/^0/,'213') + '?text=' + encodeURIComponent(waMsg(c,'reminder'));
+  window.open(url, '_blank');
+  sendIndex++;
+  if(sendIndex < startupClients.length) {
+    setTimeout(sendAllReminders, 1500);
+  } else {
+    setTimeout(()=>{ closeStartup(); sendIndex=0; }, 1000);
+  }
+}
+
+// ---- INIT ----
+render();
+checkStartup();
+</script>
+</body>
+</html>
