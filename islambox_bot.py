@@ -17,7 +17,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 # ══════════════════════════════════════════════
 #  ⚙️  الإعدادات — ضع Token البوت هنا
 # ══════════════════════════════════════════════
-BOT_TOKEN = " 8644244957:AAGoZiZbwJ7Ozqy2iXvlkDpKsD50XSMwQAI  "    
+BOT_TOKEN = " 8644244957:AAGd35K7_KwI_F8mMNkYvVTd-W0sJ8bMCXw  "    
 ADMIN_ID   =    1917928954                  # ← ضع Chat ID الخاص بك هنا (اكتب /start أولاً لمعرفته)
 DATA_FILE  = "clients.json"
 REMIND_DAYS = 3                      # عدد أيام التذكير قبل الانتهاء
